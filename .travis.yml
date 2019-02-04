@@ -6,6 +6,7 @@ services:
 install:
   - yarn --ignore-engines
   - yarn test
+  - yarn build
   - docker build -t turbologz/turbo-logz-graphql:$TRAVIS_BUILD_NUMBER .
 deploy:
   - provider: script
