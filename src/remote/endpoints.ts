@@ -1,0 +1,1 @@
+export const userApi = process.env.USER_API || 'http://localhost:80';

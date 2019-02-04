@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - '8'
+services:
+  - docker
+install:
+  - yarn --ignore-engines
+  - yarn test
+  - docker build -t turbologz/turbo-logz-graphql:$TRAVIS_BUILD_NUMBER .
+deploy:
+  - provider: script
+    script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" && docker push turbologz/turbo-logz-graphql
+    on:
+      branch: master
