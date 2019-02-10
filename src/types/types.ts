@@ -7,6 +7,11 @@ export const typeDefs = gql`
         username: String
     }
     
+    type CloudFoundryLog {
+        appId: String!
+        log: String!
+    }
+    
     type Mutation {
         signup(username: String! email: String! password: String!): User
     
@@ -15,5 +20,9 @@ export const typeDefs = gql`
     
     type Query {
         user(userId: String!): User
+    }
+    
+    type Subscription {
+        tailLog(appId: String!): CloudFoundryLog!
     }
 `;

@@ -8,6 +8,7 @@ import * as express from 'express';
 import {SubscriptionServer} from 'subscriptions-transport-ws';
 import {execute, GraphQLSchema, subscribe} from 'graphql';
 import {ConsumerGroup} from 'kafka-node';
+import {startListeningToKafka} from "./schemas/schema";
 
 export class GraphqlWsServer extends Context implements Server {
     private _listening: boolean = false;
@@ -59,6 +60,8 @@ export class GraphqlWsServer extends Context implements Server {
                 resolve();
             });
         });
+
+        startListeningToKafka(this.logsConsumerGroup);
     }
 
     async stop(): Promise<void> {

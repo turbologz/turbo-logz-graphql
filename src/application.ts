@@ -22,9 +22,9 @@ export class GraphqlApplication extends Application {
 
         const tasksLogConsumer = new ConsumerGroup({
             kafkaHost: KAFKA_HOST,
-            groupId: 'task-logs',
+            groupId: 'graphql-listener',
             fromOffset: 'latest'
-        }, ['unicron-tasks-log']);
+        }, ['log-analysis']);
 
         this.server(GraphqlServer);
         this.server(GraphqlWsServer);

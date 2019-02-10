@@ -5,6 +5,8 @@ services:
   - docker
 install:
   - yarn --ignore-engines
+  - docker pull rabbitmq:latest
+script:
   - yarn test
   - yarn build
   - docker build -t turbologz/turbo-logz-graphql:$TRAVIS_BUILD_NUMBER .
