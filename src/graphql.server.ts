@@ -33,11 +33,13 @@ export class GraphqlServer extends Context implements Server {
     }
 
     async start(): Promise<void> {
-        const expresServer = express();
+        const expressServer = express();
 
         const authMiddleware = jwt({secret: this.jwtSecret, credentialsRequired: false});
 
-        expresServer.use(authMiddleware);
+        expressServer.use(authMiddleware);
+
+        expressServer.get('/', (req, res) => res.send({message: 'Hello'}));
 
         const server = new ApolloServer({
             schema: this.schema,
@@ -55,10 +57,10 @@ export class GraphqlServer extends Context implements Server {
             }
         });
 
-        server.applyMiddleware({app: expresServer});
+        server.applyMiddleware({app: expressServer});
 
         await new Promise((resolve) => {
-            this.server = expresServer.listen(this.port, () => resolve());
+            this.server = expressServer.listen(this.port, () => resolve());
         });
     }
 

@@ -1,6 +1,7 @@
 import * as retry from 'async-retry';
 import * as isCi from 'is-ci';
 import {KafkaClient, Producer} from 'kafka-node';
+import {createRestAppClient, givenHttpServerConfig, Client} from '@loopback/testlab';
 
 let {Docker} = require('node-docker-api');
 
@@ -8,6 +9,12 @@ export interface Container {
     stop: Function;
     start: Function;
     status: Function;
+}
+
+export function getTestClient(): Client {
+    const client = createRestAppClient({restServer: {url: 'http://localhost:8000'}});
+
+    return client;
 }
 
 export async function startKafka(): Promise<Container> {
