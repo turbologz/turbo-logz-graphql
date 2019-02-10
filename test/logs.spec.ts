@@ -17,8 +17,11 @@ import {HighLevelProducer, KafkaClient, Producer} from 'kafka-node';
 describe('Logs', () => {
 
     const log = {
-        appId: 'abc123',
-        log: '\u001b[34mℹ\u001b[39m \u001b[90m｢wdm｣\u001b[39m: Compiled successfully.\n'
+        ident: 'abc123',
+        message: '\u001b[34mℹ\u001b[39m \u001b[90m｢wdm｣\u001b[39m: Compiled successfully.\n',
+        time: 1234,
+        pid: '[RTR/11]',
+        tag: 'cf.app.user.info'
     };
 
     const graphqlPort = 8000;
@@ -83,21 +86,27 @@ describe('Logs', () => {
 
         it('should send correct logs', (done) => {
             const query = gql`
-                subscription onTailLog($appId: String!) {
-                  tailLog(appId: $appId) {
-                    appId
-                    log
+                subscription onTailLog($ident: String!) {
+                  tailLog(ident: $ident) {
+                    ident
+                    message
+                    time
+                    pid
+                    tag
                   }
                 }
             `;
 
-            client.subscribe({query, variables: {appId: 'abc123'}})
+            client.subscribe({query, variables: {ident: 'abc123'}})
                 .subscribe({
                     next(data: any) {
                         expect(data.data.tailLog).to.eql({
                             __typename: 'CloudFoundryLog',
-                            appId: 'abc123',
-                            log: '\u001b[34mℹ\u001b[39m \u001b[90m｢wdm｣\u001b[39m: Compiled successfully.\n'
+                            ident: 'abc123',
+                            message: '\u001b[34mℹ\u001b[39m \u001b[90m｢wdm｣\u001b[39m: Compiled successfully.\n',
+                            time: 1234,
+                            pid: '[RTR/11]',
+                            tag: 'cf.app.user.info'
                         });
                         done();
                     }

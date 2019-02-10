@@ -17,8 +17,11 @@ export function startListeningToKafka(consumerGroup: ConsumerGroup) {
 
         await pubsub.publish('tail-log', {
             tailLog: {
-                appId: log.appId,
-                log: log.log
+                ident: log.ident,
+                message: log.message,
+                time: log.time,
+                pid: log.pid,
+                tag: log.tag
             }
         });
     });
@@ -38,7 +41,7 @@ export const resolvers = {
             subscribe: withFilter(() => {
                 return pubsub.asyncIterator('tail-log');
             }, (payload, variables) => {
-                return payload.tailLog.appId === variables.appId;
+                return payload.tailLog.ident === variables.ident;
             }),
         }
     },

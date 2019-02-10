@@ -8,8 +8,11 @@ export const typeDefs = gql`
     }
     
     type CloudFoundryLog {
-        appId: String!
-        log: String!
+        ident: String!
+        message: String!
+        time: Int!
+        pid: String!
+        tag: String!
     }
     
     type Mutation {
@@ -23,6 +26,6 @@ export const typeDefs = gql`
     }
     
     type Subscription {
-        tailLog(appId: String!): CloudFoundryLog!
+        tailLog(ident: String!): CloudFoundryLog!
     }
 `;
