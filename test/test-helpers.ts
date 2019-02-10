@@ -1,4 +1,3 @@
-import {connect, Connection} from 'amqplib';
 import * as retry from 'async-retry';
 import * as isCi from 'is-ci';
 import {KafkaClient, Producer} from 'kafka-node';
@@ -11,67 +10,12 @@ export interface Container {
     status: Function;
 }
 
-const {AMQP_URL, AMQP_USER, AMQP_PWD}: any = process.env;
-
-export async function startRabbitMq(): Promise<Container> {
-    if (!isCi) {
-        return await retry(async () => {
-            return await startMqContainer();
-        }, {
-            retries: 10
-        });
-    }
-
-    return {
-        start: () => {
-        },
-        stop: () => {
-        },
-        status: () => {
-        },
-    };
-}
-
 export async function startKafka(): Promise<Container> {
-    if (!isCi) {
-        return await retry(async () => {
-            return await startKafkaContainer();
-        }, {
-            retries: 10
-        });
-    }
-
-    return {
-        start: () => {
-        },
-        stop: () => {
-        },
-        status: () => {
-        },
-    };
-}
-
-async function startMqContainer(): Promise<Container> {
-    const docker = new Docker({socketPath: '/var/run/docker.sock'});
-
-    const container = await docker.container.create({
-        Image: 'rabbitmq',
-        host: '127.0.0.1',
-        port: 5672,
-        HostConfig: {
-            PortBindings: {
-                '5672/tcp': [
-                    {
-                        HostPort: '5672',
-                    },
-                ],
-            },
-        },
+    return await retry(async () => {
+        return await startKafkaContainer();
+    }, {
+        retries: 10
     });
-
-    await container.start();
-
-    return container;
 }
 
 async function startKafkaContainer(): Promise<Container> {
@@ -109,18 +53,6 @@ export async function stopContainer(container: Container) {
         const status = await container.status();
         dead = status.data.State.Status === 'exited';
     }
-}
-
-export async function connectToMq(): Promise<Connection> {
-    await retry(async () => {
-        const tempConn = await connect({hostname: AMQP_URL, username: AMQP_USER, password: AMQP_PWD});
-
-        await tempConn.close();
-    }, {
-        retries: 10,
-    });
-
-    return await connect({hostname: AMQP_URL, username: AMQP_USER, password: AMQP_PWD});
 }
 
 export async function connectToKafka(): Promise<KafkaClient> {
