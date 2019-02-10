@@ -17,6 +17,7 @@ import {HighLevelProducer, KafkaClient, Producer} from 'kafka-node';
 describe('Logs', () => {
 
     const log = {
+        host: 'thor.prod.prod-blog-backend',
         ident: 'abc123',
         message: '\u001b[34mℹ\u001b[39m \u001b[90m｢wdm｣\u001b[39m: Compiled successfully.\n',
         time: 1234,
@@ -88,6 +89,7 @@ describe('Logs', () => {
             const query = gql`
                 subscription onTailLog($ident: String!) {
                   tailLog(ident: $ident) {
+                    host
                     ident
                     message
                     time
@@ -102,6 +104,7 @@ describe('Logs', () => {
                     next(data: any) {
                         expect(data.data.tailLog).to.eql({
                             __typename: 'CloudFoundryLog',
+                            host: 'thor.prod.prod-blog-backend',
                             ident: 'abc123',
                             message: '\u001b[34mℹ\u001b[39m \u001b[90m｢wdm｣\u001b[39m: Compiled successfully.\n',
                             time: 1234,

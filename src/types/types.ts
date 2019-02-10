@@ -8,6 +8,7 @@ export const typeDefs = gql`
     }
     
     type CloudFoundryLog {
+        host: String!
         ident: String!
         message: String!
         time: Int!

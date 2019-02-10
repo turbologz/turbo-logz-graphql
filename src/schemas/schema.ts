@@ -17,6 +17,7 @@ export function startListeningToKafka(consumerGroup: ConsumerGroup) {
 
         await pubsub.publish('tail-log', {
             tailLog: {
+                host: log.host,
                 ident: log.ident,
                 message: log.message,
                 time: log.time,
