@@ -5,7 +5,6 @@ services:
   - docker
 install:
   - yarn --ignore-engines
-  - docker pull spotify/kafka
 script:
   - yarn test
   - yarn build

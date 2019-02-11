@@ -9,6 +9,7 @@
     "start": "nodemon --exec cross-env JWT_SECRET=abc123 ts-node-dev index",
     "build": "lb-tsc es2017 --outDir dist",
     "kube": "telepresence --swap-deployment test-unicron-graphql --run cross-env PORT=3001 yarn start",
+    "pretest": "docker pull spotify/kafka",
     "test": "cross-env JWT_SECRET=test mocha -t 20000 --exit -r ts-node/register src/**/*.spec.ts test/**/*.spec.ts",
     "test:watch": "npm run test -- --watch-extensions ts --watch"
   },
