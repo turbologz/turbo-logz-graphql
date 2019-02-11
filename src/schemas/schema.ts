@@ -1,6 +1,7 @@
-import {signup, login} from '../remote/user';
-import {withFilter, PubSub} from 'graphql-subscriptions';
-import {ConsumerGroup} from "kafka-node";
+import { signup, login } from '../remote/user';
+import { withFilter, PubSub } from 'graphql-subscriptions';
+import { ConsumerGroup } from "kafka-node";
+import { getApps, getSpaces } from '../remote/cloud-foundry';
 
 export const pubsub = new PubSub();
 
@@ -29,6 +30,16 @@ export function startListeningToKafka(consumerGroup: ConsumerGroup) {
 }
 
 export const resolvers = {
+    Query: {
+        // Cloud Foundry
+        cfSpaces: (_: any, args: any, ctx: any) => {
+            return ctx.authenticated ? getSpaces() : null;
+        },
+
+        cfApps: (_: any, args: any, ctx: any) => {
+            return ctx.authenticated ? getApps(args.spaceId) : null;
+        },
+    },
 
     Mutation: {
         // Users
