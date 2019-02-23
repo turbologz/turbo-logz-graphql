@@ -11,7 +11,7 @@ import {applicationsApi} from '../src/remote/endpoints';
 import {expect} from 'chai';
 import {gql} from 'apollo-server-express';
 
-describe('CF Spaces', () => {
+describe('CF Orgs', () => {
 
     const graphqlPort = 8000;
     const graphqlWsPort = 3000;
@@ -45,30 +45,28 @@ describe('CF Spaces', () => {
         nock.activate();
     });
 
-    it('should get a list of cloud foundry spaces', async () => {
+    it('should get a list of cloud foundry organizations', async () => {
         nock(`${applicationsApi}`)
-            .filteringPath(() => '/spaces')
-            .get('/spaces')
+            .get(`/orgs`)
             .reply(200, [
-                {id: 'id1', orgId: 'org1', name: 'space1'},
-                {id: 'id2', orgId: 'org1', name: 'space2'}
+                {id: 'id1', name: 'space1'},
+                {id: 'id2', name: 'space2'}
             ]);
 
         const query = gql`
-                query cfSpaces($orgId: String!) {
-                  cfSpaces(orgId: $orgId) {
+                query {
+                  cfOrgs {
                     id
-                    orgId
                     name
                   }
                 }
             `;
 
-        const response = await client.query({query, variables: {orgId: 'org1'}});
+        const response = await client.query({query});
 
-        expect(response.data.cfSpaces).to.eql([
-            {__typename: 'CloudFoundrySpace', id: 'id1', orgId: 'org1', name: 'space1'},
-            {__typename: 'CloudFoundrySpace', id: 'id2', orgId: 'org1', name: 'space2'}
+        expect(response.data.cfOrgs).to.eql([
+            {__typename: 'CloudFoundryOrg', id: 'id1', name: 'space1'},
+            {__typename: 'CloudFoundryOrg', id: 'id2', name: 'space2'}
         ]);
     });
 });

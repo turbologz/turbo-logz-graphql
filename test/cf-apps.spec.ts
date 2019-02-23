@@ -45,7 +45,7 @@ describe('CF Apps', () => {
         nock.activate();
     });
 
-    it('should get a list of cloud apps in a space spaces', async () => {
+    it('should get a list of cloud apps in a space', async () => {
         nock(`${applicationsApi}`)
             .filteringPath(() => '/apps')
             .get(`/apps`)
